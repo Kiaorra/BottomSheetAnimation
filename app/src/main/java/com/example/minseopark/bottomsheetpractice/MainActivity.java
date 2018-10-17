@@ -1,6 +1,8 @@
 package com.example.minseopark.bottomsheetpractice;
 
+import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.graphics.Path;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.CoordinatorLayout;
@@ -8,6 +10,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 public class MainActivity extends AppCompatActivity {
@@ -15,6 +19,9 @@ public class MainActivity extends AppCompatActivity {
     private ValueAnimator angulatingAnimator;
     private ValueAnimator roundingAnimator;
     private CoordinatorLayout.LayoutParams layoutParams;
+    private ImageView circleImage;
+    private Button button;
+
     private boolean isExpended;
 
     @Override
@@ -23,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         llBottomSheet = findViewById(R.id.bottom_sheet);
+        circleImage = findViewById(R.id.image_circle);
+        button = findViewById(R.id.button);
 
         layoutParams = (CoordinatorLayout.LayoutParams) llBottomSheet.getLayoutParams();
 
@@ -59,6 +68,29 @@ public class MainActivity extends AppCompatActivity {
             }
             @Override
             public void onSlide(@NonNull View view, float offset) {}
+        });
+
+
+        // set objectAnimator
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Path path = new Path();
+                                path.arcTo(0f, 0f, 1000f,1000f,  270f, -359f, true);
+                                ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(circleImage, circleImage.X, circleImage.Y, path);
+                                objectAnimator.setDuration(2000);
+                                objectAnimator.start();
+                            }
+                        });
+                    }
+                }).start();
+            }
         });
     }
 
